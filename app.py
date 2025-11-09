@@ -6,6 +6,10 @@ import requests
 from flask import Flask, render_template, request
 
 
+class RobloxAPIError(Exception):
+    """Raised when the Roblox API returns an application-level error."""
+
+
 app = Flask(__name__)
 
 ROBLOX_FRIENDS_API = "https://friends.roblox.com/v1/users/{user_id}/friends"
@@ -20,6 +24,12 @@ def fetch_friends(user_id: str) -> List[dict]:
         payload = response.json()
     except JSONDecodeError as exc:  # pragma: no cover - defensive branch
         raise requests.RequestException("Invalid JSON in Roblox response") from exc
+    if isinstance(payload, dict):
+        errors = payload.get("errors")
+        if isinstance(errors, list) and errors:
+            first_error = errors[0]
+            message = first_error.get("message") if isinstance(first_error, dict) else None
+            raise RobloxAPIError(message or "Roblox returned an error response.")
     return payload.get("data", [])
 
 
@@ -41,6 +51,9 @@ def index():
                 friends = fetch_friends(user_id)
                 if not friends:
                     error = "No friends found for that user ID."
+            except RobloxAPIError as exc:
+                error_message = str(exc)
+                error = error_message or "Roblox returned an error response."
             except requests.HTTPError as exc:
                 if exc.response.status_code == 404:
                     error = "Roblox user not found."
