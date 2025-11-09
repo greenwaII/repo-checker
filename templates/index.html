@@ -122,6 +122,7 @@
                             <th>Display Name</th>
                             <th>User ID</th>
                             <th>Online</th>
+                            <th>Profile</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,6 +132,11 @@
                                 <td>{{ friend.displayName }}</td>
                                 <td>{{ friend.id }}</td>
                                 <td>{{ 'Yes' if friend.isOnline else 'No' }}</td>
+                                <td>
+                                    <a href="https://www.roblox.com/users/{{ friend.id }}/profile" target="_blank" rel="noopener noreferrer">
+                                        View
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -1,4 +1,5 @@
 import os
+from json import JSONDecodeError
 from typing import List, Optional
 
 import requests
@@ -15,7 +16,10 @@ def fetch_friends(user_id: str) -> List[dict]:
     url = ROBLOX_FRIENDS_API.format(user_id=user_id)
     response = requests.get(url, timeout=10)
     response.raise_for_status()
-    payload = response.json()
+    try:
+        payload = response.json()
+    except JSONDecodeError as exc:  # pragma: no cover - defensive branch
+        raise requests.RequestException("Invalid JSON in Roblox response") from exc
     return payload.get("data", [])
 
 

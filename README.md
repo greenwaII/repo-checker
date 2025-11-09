@@ -21,7 +21,7 @@ pip install -r requirements.txt
 flask --app app run --debug
 ```
 
-Then open http://127.0.0.1:5000/ in your browser, enter a Roblox user ID, and press **Search** to view their friends in a table.
+Then open http://127.0.0.1:5000/ in your browser, enter a Roblox user ID, and press **Search** to view their friends in a table with profile links and online status.
 
 For production deployments (such as on Render), run the app with Gunicorn:
 
